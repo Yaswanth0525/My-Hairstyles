@@ -1,0 +1,37 @@
+export default function Footer() {
+  return (
+    <footer className="bg-primary-900 text-primary-300 ">
+      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div>
+            <h3 className="text-lg font-semibold mb-4 ">Modern Cuts</h3>
+            <p className="text-primary-300">
+            Expert haircuts and grooming for gentlemen, kids, and seniors—style for every generation.
+            </p>
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Hours</h3>
+            <ul className="space-y-2 text-primary-300">
+              <li>Monday - Friday: 7am - 8pm</li>
+              <li>Saturday - 7am - 9pm</li>
+              <li>Sunday -  7am - 9pm</li>
+              <li>1st Tuesday - 7am - 1pm </li>
+            </ul>
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold mb-4">Contact</h3>
+            <ul className="space-y-2 text-primary-300 ">
+              <li>Opposite Court ,Belagam</li>
+              <li>Parvathipuram, Andhra Pradesh - 535501</li>
+              <li>Phone: +91 9963738848</li>
+              <li>Email: discohairstyles@gmail.com</li>
+            </ul>
+          </div>
+        </div>
+        <div className="mt-8 pt-8 border-t border-primary-800 text-center text-primary-400">
+          <p>&copy; {new Date().getFullYear()} Modern Cuts. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+  )
+}
