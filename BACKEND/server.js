@@ -3,8 +3,18 @@ const express = require('express');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/auth-routes');
 const app = express();
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+app.use(helmet());
 
-// Enhanced DB connection with error handling
+// Rate limiting to prevent abuse
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, 
+  max: 100, 
+});
+app.use(limiter);
+
+
 connectDB().catch(err => {
   console.error('Failed to connect to MongoDB:', err);
   process.exit(1);
