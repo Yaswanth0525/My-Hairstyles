@@ -13,9 +13,7 @@ export default function Footer() {
             <h3 className="text-lg font-semibold mb-4">Hours</h3>
             <ul className="space-y-2 text-primary-300">
               <li>Monday - Friday: 7am - 8pm</li>
-              <li>Saturday - 7am - 9pm</li>
-              <li>Sunday -  7am - 9pm</li>
-              <li>1st Tuesday - 7am - 1pm </li>
+              <li>Saturday - sunday:7am - 9pm</li>
             </ul>
           </div>
           <div>
@@ -23,7 +21,7 @@ export default function Footer() {
             <ul className="space-y-2 text-primary-300 ">
               <li>Opposite Court ,Belagam</li>
               <li>Parvathipuram, Andhra Pradesh - 535501</li>
-              <li>Phone: +91 9963738848</li>
+              <li>Phone: +91 9964738848</li>
               <li>Email: discohairstyles@gmail.com</li>
             </ul>
           </div>
