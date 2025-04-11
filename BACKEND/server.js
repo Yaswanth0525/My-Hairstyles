@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/auth-routes');
+const Booking = require('./model/booking');
 const app = express();
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
@@ -38,6 +39,18 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
+app.get('/disco/bookings/retive', async (req, res) => {
+  try {
+    const bookings = await Booking.find().sort({ date: -1 }); 
+    // res.json(bookings);
+    res.status(200).json({
+      success: true,
+      bookings: bookings,
+    });
+  } catch (err) {
+    res.status(500).json({ error: 'Server Error' });
+  }
+});
 app.use('/disco/',authRoutes);
 const PORT = process.env.PORT || 4000;
 app.listen(PORT,()=>{

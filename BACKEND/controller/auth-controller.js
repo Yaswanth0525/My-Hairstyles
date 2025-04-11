@@ -1,42 +1,52 @@
 const mongoose = require('mongoose');
 const Booking = require('../model/booking');
 const Feedback = require('../model/feedback');
-const formBooking = async(req,res)=>{
-    try{
-        const {datetime,name,email,phone} = req.body;
-        if(!datetime || !name || !email || !phone){
-            return res.status(400).json({
-                success: false,
-                message: 'Please fill all the fields',
-            })
-        }
-        const checkDate = await Booking.findOne({datetime});
-        // console.log('Check Date:', checkDate);
-        if(checkDate){ 
-            return res.status(400).json({
-                success: false,
-                message: 'That time and date has already booked',
-            });
-        }
-        const newBooking = new Booking({
-            datetime,
-            name,
-            email,
-            phone
-        })
-        newBooking.save();
-        return res.status(200).json({
-            success: true,
-            message: 'Booking Successful',
-        })
-    }catch(err){
-        return res.status(500).json({
-            error: err.message,
-            success: false,
-            message: 'Server Error in Booking',
-        })
+
+const formBooking = async (req, res) => {
+  try {
+    const { datetime, name, email, phone, serviceName } = req.body;
+
+    // Basic field validation
+    if (!datetime || !name || !email || !phone || !serviceName) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please fill all the fields',
+      });
     }
-}
+
+    // Check if booking for the same datetime already exists
+    const checkDate = await Booking.findOne({ datetime });
+    if (checkDate) {
+      return res.status(400).json({
+        success: false,
+        message: 'That time and date has already been booked',
+      });
+    }
+
+    // Create and save new booking
+    const newBooking = new Booking({
+      datetime,
+      name,
+      email,
+      phone,
+      serviceName, 
+    });
+
+    await newBooking.save(); 
+    return res.status(200).json({
+      success: true,
+      message: 'Booking successful',
+    });
+  } catch (err) {
+    console.error('Booking error:', err);
+    return res.status(500).json({
+      success: false,
+      message: 'Server error in booking',
+      error: err.message,
+    });
+  }
+};
+
 const formFeedback = async(req,res)=>{
     try{
         // Verify DB connection

@@ -6,6 +6,7 @@ import Gallery from './pages/Gallery'
 import Contact from './pages/Contact'
 import Footer from './components/Footer'
 import { Toaster ,toast} from "sonner";
+import Admin from './pages/Admin'
 
 
 function App() {
@@ -19,6 +20,8 @@ function App() {
           <Route path="/services" element={<Services />} />
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="*" element={<Home />} />
         </Routes>
       </main>
       <Footer />

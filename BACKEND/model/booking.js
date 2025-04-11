@@ -5,6 +5,11 @@ const bookingSchema = new mongoose.Schema({
     type: Date,
     required: true,
   },
+  serviceName: {
+    type: String,
+    required: true,
+    trim: true,
+  },
   name: {
     type: String,
     required: true,
