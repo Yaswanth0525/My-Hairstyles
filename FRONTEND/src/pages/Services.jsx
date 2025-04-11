@@ -329,6 +329,7 @@ export default function Services() {
                   <input
                     type="text"
                     name="name"
+                    placeholder='Ex..Yashu'
                     value={bookingForm.name}
                     onChange={handleChange}
                     className={`w-full p-2 border rounded-md focus:ring-2 focus:ring-cyan-300 focus:border-cyan-500 outline-none ${errors.name ? 'border-red-500' : 'border-gray-300'}`}
@@ -343,6 +344,7 @@ export default function Services() {
                   <input
                     type="email"
                     name="email"
+                    placeholder='Ex..yashu@gmail.com'
                     value={bookingForm.email}
                     onChange={handleChange}
                     className={`w-full p-2 border rounded-md focus:ring-2 focus:ring-cyan-300 focus:border-cyan-500 outline-none ${errors.email ? 'border-red-500' : 'border-gray-300'}`}
@@ -359,7 +361,7 @@ export default function Services() {
                     name="phone"
                     value={bookingForm.phone}
                     onChange={handleChange}
-                    placeholder="10 digits, starting with 6-9"
+                    placeholder="10 digits, valid phone number"
                     className={`w-full p-2 border rounded-md focus:ring-2 focus:ring-cyan-300 focus:border-cyan-500 outline-none ${errors.phone ? 'border-red-500' : 'border-gray-300'}`}
                     aria-invalid={errors.phone ? "true" : "false"}
                   />

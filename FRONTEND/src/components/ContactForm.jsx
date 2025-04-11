@@ -157,6 +157,7 @@ export default function ContactForm() {
             id="name"
             name="name"
             type="text"
+            placeholder='Enter your name'
             value={formData.name}
             onChange={handleChange}
             className={`w-full p-2 border rounded-md focus:ring-2 focus:ring-cyan-300 focus:border-cyan-500 outline-none ${errors.name ? 'border-red-500' : 'border-gray-300'}`}
@@ -172,6 +173,7 @@ export default function ContactForm() {
           <input
             id="email"
             name="email"
+            placeholder='Enter your email'
             type="email"
             value={formData.email}
             onChange={handleChange}
@@ -188,6 +190,7 @@ export default function ContactForm() {
           <textarea
             id="message"
             name="message"
+            placeholder='Enter the issue you are facing!😔'
             rows={4}
             value={formData.message}
             onChange={handleChange}
