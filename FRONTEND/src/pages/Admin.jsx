@@ -6,9 +6,9 @@ function Admin() {
   useEffect(() => {
     const fetchBookings = async () => {
       try {
-        const res = await fetch('http://localhost:4000/disco/bookings/retive'); // adjust to your backend URL
+        const res = await fetch('http://localhost:4000/disco/bookings/retive');
         const data = await res.json();
-        console.log('Fetched response:', data); // ✅ See what the response looks like
+        console.log('Fetched response:', data); 
 
         // Fix: check for data.bookings
         if (Array.isArray(data.bookings)) {
