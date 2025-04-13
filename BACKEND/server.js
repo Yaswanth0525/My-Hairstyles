@@ -41,8 +41,7 @@ app.use(cors({
 app.use(express.json());
 app.get('/disco/bookings/retive', async (req, res) => {
   try {
-    const bookings = await Booking.find().sort({ date: -1 }); 
-    // res.json(bookings);
+    const bookings = await Booking.find().sort({ datetime: 1 });
     res.status(200).json({
       success: true,
       bookings: bookings,
