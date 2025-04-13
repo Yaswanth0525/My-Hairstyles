@@ -39,7 +39,7 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
-app.get('/disco/bookings/retive', async (req, res) => {
+app.get('/disco/bookings/retrieve', async (req, res) => {
   try {
     const bookings = await Booking.find().sort({ datetime: 1 });
     res.status(200).json({

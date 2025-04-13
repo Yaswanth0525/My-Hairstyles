@@ -84,6 +84,40 @@ const formFeedback = async(req,res)=>{
     }
 }
 
-module.exports = {formBooking,formFeedback};
+const deleteBooking = async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid booking ID'
+      });
+    }
+
+    const deletedBooking = await Booking.findByIdAndDelete(id);
+    
+    if (!deletedBooking) {
+      return res.status(404).json({
+        success: false,
+        message: 'Booking not found'
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: 'Booking deleted successfully'
+    });
+  } catch (err) {
+    console.error('Delete booking error:', err);
+    return res.status(500).json({
+      success: false,
+      message: 'Server error while deleting booking',
+      error: err.message
+    });
+  }
+};
+
+module.exports = {formBooking, formFeedback, deleteBooking};
 
 
