@@ -100,7 +100,7 @@ export default function Services() {
         serviceName: selectedService.name
       };
 
-      const res = await fetch('http://localhost:4000/disco/booking', {
+      const res = await fetch('https://my-hairstyles.onrender.com/disco/booking', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

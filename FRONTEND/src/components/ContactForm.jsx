@@ -50,7 +50,7 @@ export default function ContactForm() {
     
     try {
       
-      const res = await fetch('http://localhost:4000/disco/feedback', {
+      const res = await fetch('https://my-hairstyles.onrender.com/disco/feedback', {
         
         method: 'POST',
         headers: {
