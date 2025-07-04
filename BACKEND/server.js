@@ -33,12 +33,18 @@ app.get('/disco/health', (req, res) => {
 
 const cors = require('cors');
 app.use(cors({
-  origin: ['http://localhost:5173', 'https://my-hairstyles.vercel.app'],
+  origin: [
+    'http://localhost:5173',
+    'https://my-hairstyles.vercel.app',
+    'https://my-hairstyles-1.onrender.com' 
+  ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
 app.use(express.json());
+app.set('trust proxy', 1)
 app.get('/disco/bookings/retrieve', async (req, res) => {
   try {
     const bookings = await Booking.find().sort({ datetime: 1 });
