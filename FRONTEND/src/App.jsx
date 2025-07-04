@@ -6,7 +6,6 @@ import Gallery from './pages/Gallery'
 import Contact from './pages/Contact'
 import Footer from './components/Footer'
 import { Toaster ,toast} from "sonner";
-import Admin from './pages/Admin'
 
 
 function App() {
