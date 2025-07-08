@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-
+import { Link } from 'react-router-dom';
 const testimonials = [
   {
     name: 'Krishna',
@@ -52,15 +52,19 @@ export default function Home() {
             >
               Where style meets precision
             </motion.p>
-            <motion.a
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.6 }}
-              href="/services"
-              className="bg-white text-primary-900 px-8 py-3 rounded-md font-semibold hover:bg-primary-100 transition-colors"
-            >
-              Book Now
-            </motion.a>
+            <motion.div
+  initial={{ y: 20, opacity: 0 }}
+  animate={{ y: 0, opacity: 1 }}
+  transition={{ delay: 0.6 }}
+>
+  <Link
+    to="/services"
+    className="inline-block bg-white text-primary-900 px-8 py-3 rounded-md font-semibold hover:bg-primary-100 transition-colors"
+  >
+    Book Now
+  </Link>
+</motion.div>
+
           </div>
         </div>
       </motion.section>
