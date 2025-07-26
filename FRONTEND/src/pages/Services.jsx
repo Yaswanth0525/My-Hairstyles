@@ -6,8 +6,8 @@ import { toast } from 'sonner';
 
 // Use localhost for development, production URL for deployment
 const API_BASE_URL = import.meta.env.DEV 
-  ? 'http://localhost:4000' 
-  : 'https://my-hairstyles-1.onrender.com';
+  ? 'http://localhost:4000'
+  : 'https://my-hairstyles.onrender.com';
 
 const services = [
   {

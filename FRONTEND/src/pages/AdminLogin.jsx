@@ -7,7 +7,7 @@ import { LockClosedIcon, EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outli
 // Use localhost for development, production URL for deployment
 const API_BASE_URL = import.meta.env.DEV 
   ? 'http://localhost:4000' 
-  : 'https://my-hairstyles-1.onrender.com';
+  : 'https://my-hairstyles.onrender.com';
 
 const AdminLogin = () => {
   const [formData, setFormData] = useState({
