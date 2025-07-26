@@ -82,13 +82,5 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
-  console.log('CORS origins allowed:', [
-    'http://localhost:3000',
-    'http://localhost:5173',
-    'http://localhost:5174',
-    'http://localhost:5175',
-    'http://localhost:3001',
-    'https://my-hairstyles.vercel.app',
-    'https://my-hairstyles-1.onrender.com'
-  ]);
+  console.log('CORS configuration: Allow all origins for debugging');
 });
