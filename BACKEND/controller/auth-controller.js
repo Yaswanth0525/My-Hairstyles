@@ -4,6 +4,7 @@ const Feedback = require('../model/feedback');
 const User = require('../model/user');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { sendEmail } = require('../config/email');
 
 const formBooking = async (req, res) => {
   try {
@@ -41,6 +42,22 @@ const formBooking = async (req, res) => {
     });
 
     await newBooking.save(); 
+    
+    // Send email notification to owner
+    const ownerEmail = process.env.OWNER_EMAIL || 'your-email@gmail.com'; // Set this in your .env file
+    const emailResult = await sendEmail(ownerEmail, 'bookingNotification', {
+      name,
+      email,
+      phone,
+      serviceName,
+      serviceDuration,
+      datetime
+    });
+    
+    if (!emailResult.success) {
+      console.error('Failed to send booking notification email:', emailResult.error);
+    }
+    
     return res.status(200).json({
       success: true,
       message: 'Booking successful',
@@ -228,6 +245,33 @@ const updateBookingStatus = async (req, res) => {
         success: false,
         message: 'Booking not found'
       });
+    }
+
+    // Send email to customer based on status
+    if (status === 'accepted') {
+      const emailResult = await sendEmail(updatedBooking.email, 'bookingConfirmation', {
+        name: updatedBooking.name,
+        email: updatedBooking.email,
+        serviceName: updatedBooking.serviceName,
+        serviceDuration: updatedBooking.serviceDuration,
+        datetime: updatedBooking.datetime
+      });
+      
+      if (!emailResult.success) {
+        console.error('Failed to send confirmation email:', emailResult.error);
+      }
+    } else if (status === 'rejected') {
+      const emailResult = await sendEmail(updatedBooking.email, 'bookingRejection', {
+        name: updatedBooking.name,
+        email: updatedBooking.email,
+        serviceName: updatedBooking.serviceName,
+        serviceDuration: updatedBooking.serviceDuration,
+        datetime: updatedBooking.datetime
+      });
+      
+      if (!emailResult.success) {
+        console.error('Failed to send rejection email:', emailResult.error);
+      }
     }
 
     return res.status(200).json({
