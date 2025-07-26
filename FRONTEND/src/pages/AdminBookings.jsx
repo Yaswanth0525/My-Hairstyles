@@ -1,6 +1,19 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { motion } from 'framer-motion';
+import { 
+  ArrowLeftIcon,
+  CalendarIcon,
+  UserIcon,
+  PhoneIcon,
+  EnvelopeIcon,
+  ClockIcon,
+  CheckCircleIcon,
+  XCircleIcon,
+  TrashIcon,
+  ExclamationTriangleIcon
+} from '@heroicons/react/24/outline';
 
 // Use localhost for development, production URL for deployment
 const API_BASE_URL = import.meta.env.DEV 
@@ -10,6 +23,7 @@ const API_BASE_URL = import.meta.env.DEV
 const AdminBookings = () => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState('all');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -113,15 +127,28 @@ const AdminBookings = () => {
   const getStatusColor = (status) => {
     switch (status) {
       case 'pending':
-        return 'bg-yellow-100 text-yellow-800';
+        return 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200 border-yellow-200 dark:border-yellow-700';
       case 'accepted':
-        return 'bg-green-100 text-green-800';
+        return 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 border-green-200 dark:border-green-700';
       case 'rejected':
-        return 'bg-red-100 text-red-800';
+        return 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200 border-red-200 dark:border-red-700';
       case 'cancelled':
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-gray-200 dark:border-gray-600';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-gray-200 dark:border-gray-600';
+    }
+  };
+
+  const getStatusIcon = (status) => {
+    switch (status) {
+      case 'pending':
+        return <ExclamationTriangleIcon className="h-4 w-4" />;
+      case 'accepted':
+        return <CheckCircleIcon className="h-4 w-4" />;
+      case 'rejected':
+        return <XCircleIcon className="h-4 w-4" />;
+      default:
+        return <ClockIcon className="h-4 w-4" />;
     }
   };
 
@@ -136,117 +163,188 @@ const AdminBookings = () => {
     });
   };
 
+  const filteredBookings = bookings.filter(booking => {
+    if (filter === 'all') return true;
+    return booking.status === filter;
+  });
+
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading bookings...</p>
+          <p className="mt-4 text-gray-600 dark:text-gray-300">Loading bookings...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
-      <div className="bg-white shadow">
+      <div className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Manage Bookings</h1>
-              <p className="text-gray-600">View and manage all customer bookings</p>
-            </div>
-            <div className="flex space-x-3">
+            <div className="flex items-center space-x-4">
               <button
                 onClick={() => navigate('/admin/dashboard')}
-                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                className="p-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-200"
               >
-                Back to Dashboard
+                <ArrowLeftIcon className="h-6 w-6" />
               </button>
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Manage Bookings</h1>
+                <p className="text-gray-600 dark:text-gray-300">View and manage all customer bookings</p>
+              </div>
             </div>
+            <div className="flex items-center space-x-3">
+              <span className="text-sm text-gray-600 dark:text-gray-300">
+                Total: {bookings.length}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Filter Tabs */}
+      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex space-x-8">
+            {[
+              { key: 'all', label: 'All', count: bookings.length },
+              { key: 'pending', label: 'Pending', count: bookings.filter(b => b.status === 'pending').length },
+              { key: 'accepted', label: 'Accepted', count: bookings.filter(b => b.status === 'accepted').length },
+              { key: 'rejected', label: 'Rejected', count: bookings.filter(b => b.status === 'rejected').length },
+              { key: 'cancelled', label: 'Cancelled', count: bookings.filter(b => b.status === 'cancelled').length },
+            ].map((tab) => (
+              <button
+                key={tab.key}
+                onClick={() => setFilter(tab.key)}
+                className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-200 ${
+                  filter === tab.key
+                    ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+                    : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
+                }`}
+              >
+                {tab.label} ({tab.count})
+              </button>
+            ))}
           </div>
         </div>
       </div>
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-white shadow overflow-hidden sm:rounded-md">
-          {bookings.length === 0 ? (
-            <div className="text-center py-12">
-              <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-              <h3 className="mt-2 text-sm font-medium text-gray-900">No bookings</h3>
-              <p className="mt-1 text-sm text-gray-500">No bookings have been made yet.</p>
+        {filteredBookings.length === 0 ? (
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center py-12"
+          >
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-8">
+              <CalendarIcon className="mx-auto h-16 w-16 text-gray-400 dark:text-gray-500 mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+                {filter === 'all' ? 'No bookings' : `No ${filter} bookings`}
+              </h3>
+              <p className="text-gray-500 dark:text-gray-400">
+                {filter === 'all' 
+                  ? 'No bookings have been made yet.' 
+                  : `No ${filter} bookings found.`
+                }
+              </p>
             </div>
-          ) : (
-            <ul className="divide-y divide-gray-200">
-              {bookings.map((booking) => (
-                <li key={booking._id} className="px-6 py-4">
-                  <div className="flex items-center justify-between">
+          </motion.div>
+        ) : (
+          <div className="space-y-4">
+            {filteredBookings.map((booking, index) => (
+              <motion.div
+                key={booking._id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className="bg-white dark:bg-gray-800 shadow-lg rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden"
+              >
+                <div className="p-6">
+                  <div className="flex items-start justify-between">
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center space-x-3">
-                            <p className="text-sm font-medium text-gray-900">
-                              {booking.name}
-                            </p>
-                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(booking.status)}`}>
-                              {booking.status}
-                            </span>
+                      <div className="flex items-center space-x-3 mb-3">
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                          {booking.name}
+                        </h3>
+                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(booking.status)}`}>
+                          {getStatusIcon(booking.status)}
+                          <span className="ml-1 capitalize">{booking.status}</span>
+                        </span>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <div className="space-y-2">
+                          <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-300">
+                            <EnvelopeIcon className="h-4 w-4" />
+                            <span>{booking.email}</span>
                           </div>
-                          <p className="text-sm text-gray-500">
-                            {booking.email} • {booking.phone}
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            Service: {booking.serviceName}
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            Date & Time: {formatDateTime(booking.datetime)}
-                          </p>
+                          <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-300">
+                            <PhoneIcon className="h-4 w-4" />
+                            <span>{booking.phone}</span>
+                          </div>
                         </div>
-                        <div className="ml-4 flex-shrink-0 flex space-x-2">
-                          {/* Status Update Buttons */}
-                          {booking.status === 'pending' && (
-                            <>
-                              <button
-                                onClick={() => handleStatusUpdate(booking._id, 'accepted')}
-                                className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm font-medium"
-                              >
-                                Accept
-                              </button>
-                              <button
-                                onClick={() => handleStatusUpdate(booking._id, 'rejected')}
-                                className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm font-medium"
-                              >
-                                Reject
-                              </button>
-                            </>
-                          )}
-                          {booking.status === 'accepted' && (
-                            <button
-                              onClick={() => handleStatusUpdate(booking._id, 'cancelled')}
-                              className="bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded text-sm font-medium"
-                            >
-                              Cancel
-                            </button>
-                          )}
-                          <button
-                            onClick={() => handleDeleteBooking(booking._id)}
-                            className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm font-medium"
-                          >
-                            Delete
-                          </button>
+                        <div className="space-y-2">
+                          <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-300">
+                            <UserIcon className="h-4 w-4" />
+                            <span className="font-medium">Service:</span>
+                            <span>{booking.serviceName}</span>
+                          </div>
+                          <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-300">
+                            <ClockIcon className="h-4 w-4" />
+                            <span className="font-medium">Date & Time:</span>
+                            <span>{formatDateTime(booking.datetime)}</span>
+                          </div>
                         </div>
                       </div>
                     </div>
+                    
+                    <div className="ml-6 flex flex-col space-y-2">
+                      {/* Status Update Buttons */}
+                      {booking.status === 'pending' && (
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={() => handleStatusUpdate(booking._id, 'accepted')}
+                            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center space-x-1"
+                          >
+                            <CheckCircleIcon className="h-4 w-4" />
+                            <span>Accept</span>
+                          </button>
+                          <button
+                            onClick={() => handleStatusUpdate(booking._id, 'rejected')}
+                            className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center space-x-1"
+                          >
+                            <XCircleIcon className="h-4 w-4" />
+                            <span>Reject</span>
+                          </button>
+                        </div>
+                      )}
+                      {booking.status === 'accepted' && (
+                        <button
+                          onClick={() => handleStatusUpdate(booking._id, 'cancelled')}
+                          className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200"
+                        >
+                          Cancel
+                        </button>
+                      )}
+                      <button
+                        onClick={() => handleDeleteBooking(booking._id)}
+                        className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center space-x-1"
+                      >
+                        <TrashIcon className="h-4 w-4" />
+                        <span>Delete</span>
+                      </button>
+                    </div>
                   </div>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

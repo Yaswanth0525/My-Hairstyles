@@ -252,27 +252,27 @@ export default function Services() {
   };
 
   return (
-    <div className="py-12 bg-gray-50">
+    <div className="py-12 bg-gray-50 dark:bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-          <h1 className="text-4xl font-bold text-center mb-12">Our Services</h1>
+          <h1 className="text-4xl font-bold text-center mb-12 text-gray-900 dark:text-white">Our Services</h1>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 mb-12">
             {services.map((service) => (
               <motion.div
                 key={service.id}
                 whileHover={{ scale: 1.02 }}
-                className="bg-white rounded-lg shadow-md overflow-hidden"
+                className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden"
               >
                 <div className="p-6">
                   <div className="flex justify-between items-start mb-4">
                     <div>
-                      <h3 className="text-xl font-semibold">{service.name}</h3>
-                      <p className="text-gray-600">{service.description}</p>
+                      <h3 className="text-xl font-semibold text-gray-900 dark:text-white">{service.name}</h3>
+                      <p className="text-gray-600 dark:text-gray-300">{service.description}</p>
                     </div>
                     <div className="text-right">
                       <p className="text-2xl font-bold text-primary-600">Rs/- {service.price}</p>
-                      <p className="text-sm text-gray-500">{service.duration} min</p>
+                                              <p className="text-sm text-gray-500 dark:text-gray-400">{service.duration} min</p>
                     </div>
                   </div>
                   <button
@@ -291,9 +291,9 @@ export default function Services() {
               ref={bookingFormRef}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="max-w-md mx-auto bg-white rounded-lg shadow-md p-6"
+              className="max-w-md mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-md p-6"
             >
-              <h2 className="text-2xl font-bold mb-6">Book {selectedService.name}</h2>
+                              <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Book {selectedService.name}</h2>
 
               {submitStatus && (
                 <div className={`mb-4 p-3 rounded-md ${submitStatus.type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
@@ -303,25 +303,25 @@ export default function Services() {
 
               <form onSubmit={handleBooking} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Select Date</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Select Date</label>
                   <DatePicker
                     selected={selectedDate}
                     onChange={handleDateChange}
                     minDate={new Date()}
                     dateFormat="MMMM d, yyyy"
                     placeholderText="Select appointment date"
-                    className={`w-full p-2 border rounded-md ${errors.date ? 'border-red-500' : 'border-gray-300'}`}
+                    className={`w-full p-2 border rounded-md dark:bg-gray-700 dark:text-white dark:border-gray-600 ${errors.date ? 'border-red-500' : 'border-gray-300'}`}
                   />
                   {errors.date && <p className="mt-1 text-sm text-red-600">{errors.date}</p>}
                 </div>
                 {selectedDate && (
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Available Time Slots</label>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Available Time Slots</label>
                     {availableSlots.length > 0 ? (
                       <select
                         value={selectedTime || ''}
                         onChange={e => setSelectedTime(e.target.value)}
-                        className="w-full p-2 border rounded-md"
+                        className="w-full p-2 border rounded-md dark:bg-gray-700 dark:text-white dark:border-gray-600"
                       >
                         <option value="" disabled>Select a time</option>
                         {availableSlots.map(slot => (
@@ -337,38 +337,38 @@ export default function Services() {
                   </div>
                 )}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name</label>
                   <input
                     type="text"
                     name="name"
                     placeholder='Ex..Yashu'
                     value={bookingForm.name}
                     onChange={handleChange}
-                    className={`w-full p-2 border rounded-md ${errors.name ? 'border-red-500' : 'border-gray-300'}`}
+                    className={`w-full p-2 border rounded-md dark:bg-gray-700 dark:text-white dark:border-gray-600 ${errors.name ? 'border-red-500' : 'border-gray-300'}`}
                   />
                   {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
                   <input
                     type="email"
                     name="email"
                     placeholder='Ex..yashu@gmail.com'
                     value={bookingForm.email}
                     onChange={handleChange}
-                    className={`w-full p-2 border rounded-md ${errors.email ? 'border-red-500' : 'border-gray-300'}`}
+                    className={`w-full p-2 border rounded-md dark:bg-gray-700 dark:text-white dark:border-gray-600 ${errors.email ? 'border-red-500' : 'border-gray-300'}`}
                   />
                   {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Phone</label>
                   <input
                     type="tel"
                     name="phone"
                     value={bookingForm.phone}
                     onChange={handleChange}
                     placeholder="10 digits, valid phone number"
-                    className={`w-full p-2 border rounded-md ${errors.phone ? 'border-red-500' : 'border-gray-300'}`}
+                    className={`w-full p-2 border rounded-md dark:bg-gray-700 dark:text-white dark:border-gray-600 ${errors.phone ? 'border-red-500' : 'border-gray-300'}`}
                   />
                   {errors.phone && <p className="mt-1 text-sm text-red-600">{errors.phone}</p>}
                 </div>

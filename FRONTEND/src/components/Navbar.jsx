@@ -49,7 +49,7 @@ export default function Navbar() {
           <div className="flex md:hidden">
             <button
               type="button"
-              className="text-gray-500 hover:text-gray-600"
+              className="text-gray-500 hover:text-gray-600 dark:text-gray-400 dark:hover:text-gray-300"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               <span className="sr-only">Open menu</span>
