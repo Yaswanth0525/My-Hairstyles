@@ -77,7 +77,7 @@ const AdminLogin = () => {
             Admin Access
           </h2>
           <p className="text-gray-600 mb-8">
-            Sign in to manage bookings and feedback
+            Not for User Access. Admins only.
           </p>
         </div>
       </motion.div>
