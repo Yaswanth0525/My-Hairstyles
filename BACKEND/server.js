@@ -11,16 +11,7 @@ const cors = require('cors');
 
 // CORS configuration - must be before other middleware
 app.use(cors({
-  origin: [
-    'http://localhost:3000',
-    'http://localhost:5173',
-    'http://localhost:5174',
-    'http://localhost:5175',
-    'http://localhost:3001',
-    'https://my-hairstyles.vercel.app',
-    'https://my-hairstyles-1.onrender.com',
-    'https://my-hairstyles.vercel.app'
-  ],
+  origin: true, // Allow all origins for debugging
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
@@ -56,6 +47,14 @@ app.get('/disco/health', (req, res) => {
   });
 });
 
+// Add test endpoint for debugging
+app.get('/disco/test', (req, res) => {
+  res.json({
+    message: 'Backend is working!',
+    timestamp: new Date().toISOString()
+  });
+});
+
 app.use(express.json());
 app.set('trust proxy', 1)
 
@@ -83,13 +82,5 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
-  console.log('CORS origins allowed:', [
-    'http://localhost:3000',
-    'http://localhost:5173',
-    'http://localhost:5174',
-    'http://localhost:5175',
-    'http://localhost:3001',
-    'https://my-hairstyles.vercel.app',
-    'https://my-hairstyles-1.onrender.com'
-  ]);
+  console.log('CORS configuration: Allow all origins for debugging');
 });
