@@ -74,6 +74,22 @@ export default function Services() {
   const [submitStatus, setSubmitStatus] = useState(null);
   const bookingFormRef = useRef(null);
 
+  // Test backend connectivity
+  useEffect(() => {
+    const testBackend = async () => {
+      try {
+        console.log('Testing backend connectivity...');
+        const response = await fetch(`${API_BASE_URL}/disco/test`);
+        const data = await response.json();
+        console.log('Backend test response:', data);
+      } catch (error) {
+        console.error('Backend test failed:', error);
+      }
+    };
+    
+    testBackend();
+  }, []);
+
   const formatDate = (date) => {
     if (!date) return '';
     return new Intl.DateTimeFormat('en-IN', {
@@ -91,16 +107,37 @@ export default function Services() {
       return;
     }
     const dateStr = selectedDate.toISOString().slice(0, 10); // 'YYYY-MM-DD'
-    fetch(`${API_BASE_URL}/disco/unavailable-slots?date=${dateStr}&serviceName=${encodeURIComponent(selectedService.name)}`)
-      .then(res => res.json())
+    const url = `${API_BASE_URL}/disco/unavailable-slots?date=${dateStr}&serviceName=${encodeURIComponent(selectedService.name)}`;
+    
+    console.log('Fetching unavailable slots from:', url);
+    
+    fetch(url)
+      .then(res => {
+        console.log('Response status:', res.status);
+        console.log('Response headers:', res.headers);
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
       .then(data => {
-        if (!data.success) return setAvailableSlots([]);
+        console.log('Received data:', data);
+        if (!data.success) {
+          console.log('No success in response, setting empty slots');
+          return setAvailableSlots([]);
+        }
         const allSlots = generateSlots(7, 20, 30, dateStr); // 7:00 to 20:00, every 30 min
         const filtered = allSlots.filter(slot =>
           isSlotAvailable(slot, selectedService.duration, data.blocked)
         );
+        console.log('Filtered available slots:', filtered);
         setAvailableSlots(filtered);
         setSelectedTime(null);
+      })
+      .catch(err => {
+        console.error('Error fetching unavailable slots:', err);
+        toast.error('Failed to load available time slots. Please try again.');
+        setAvailableSlots([]);
       });
   }, [selectedService, selectedDate]);
 
