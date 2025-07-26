@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
 import { toast } from 'sonner';
+
+// Use localhost for development, production URL for deployment
+const API_BASE_URL = import.meta.env.DEV 
+  ? 'http://localhost:4000' 
+  : 'https://my-hairstyles-1.onrender.com';
+
 export default function ContactForm() {
   const [formData, setFormData] = useState({
     name: '',
@@ -50,7 +56,7 @@ export default function ContactForm() {
     
     try {
       
-      const res = await fetch('https://my-hairstyles.onrender.com/disco/feedback', {
+      const res = await fetch(`${API_BASE_URL}/disco/feedback`, {
         
         method: 'POST',
         headers: {
