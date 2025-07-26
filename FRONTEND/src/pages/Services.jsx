@@ -1,8 +1,13 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
+
+// Use localhost for development, production URL for deployment
+const API_BASE_URL = import.meta.env.DEV 
+  ? 'http://localhost:4000' 
+  : 'https://my-hairstyles-1.onrender.com';
 
 const services = [
   {
@@ -10,34 +15,55 @@ const services = [
     name: 'Classic Haircut',
     description: 'Traditional haircut with modern styling',
     price: 70,
-    duration: '30 min',
+    duration: 30,
   },
   {
     id: 2,
     name: 'Beard Trim',
     description: 'Professional beard grooming and shaping',
     price: 50,
-    duration: '20 min',
+    duration: 20,
   },
   {
     id: 3,
     name: 'Hot Towel Shave',
     description: 'Traditional straight razor shave with hot towel treatment',
     price: 60,
-    duration: '25 min',
+    duration: 30,
   },
   {
     id: 4,
     name: 'Hair & Beard Combo',
     description: 'Complete grooming package with haircut and beard trim',
     price: 120,
-    duration: '1 hour',
+    duration: 60,
   },
 ];
+
+function generateSlots(startHour, endHour, intervalMinutes, date) {
+  const slots = [];
+  const start = new Date(date + 'T' + String(startHour).padStart(2, '0') + ':00:00');
+  const end = new Date(date + 'T' + String(endHour).padStart(2, '0') + ':00:00');
+  for (let d = new Date(start); d < end; d.setMinutes(d.getMinutes() + intervalMinutes)) {
+    slots.push(new Date(d));
+  }
+  return slots;
+}
+
+function isSlotAvailable(slotStart, duration, blocked) {
+  const slotEnd = new Date(slotStart.getTime() + duration * 60000);
+  return !blocked.some(({ start, end }) => {
+    const blockStart = new Date(start);
+    const blockEnd = new Date(end);
+    return slotStart < blockEnd && slotEnd > blockStart;
+  });
+}
 
 export default function Services() {
   const [selectedService, setSelectedService] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
+  const [availableSlots, setAvailableSlots] = useState([]);
+  const [selectedTime, setSelectedTime] = useState(null);
   const [bookingForm, setBookingForm] = useState({
     name: '',
     email: '',
@@ -57,6 +83,27 @@ export default function Services() {
     }).format(date);
   };
 
+  // Fetch available slots when service or date changes
+  useEffect(() => {
+    if (!selectedService || !selectedDate) {
+      setAvailableSlots([]);
+      setSelectedTime(null);
+      return;
+    }
+    const dateStr = selectedDate.toISOString().slice(0, 10); // 'YYYY-MM-DD'
+    fetch(`${API_BASE_URL}/disco/unavailable-slots?date=${dateStr}&serviceName=${encodeURIComponent(selectedService.name)}`)
+      .then(res => res.json())
+      .then(data => {
+        if (!data.success) return setAvailableSlots([]);
+        const allSlots = generateSlots(7, 20, 30, dateStr); // 7:00 to 20:00, every 30 min
+        const filtered = allSlots.filter(slot =>
+          isSlotAvailable(slot, selectedService.duration, data.blocked)
+        );
+        setAvailableSlots(filtered);
+        setSelectedTime(null);
+      });
+  }, [selectedService, selectedDate]);
+
   const validateForm = () => {
     const newErrors = {};
     if (!selectedService) {
@@ -75,11 +122,11 @@ export default function Services() {
       newErrors.phone = 'Please enter a valid Indian phone number (10 digits starting with 6-9)';
     }
     if (!selectedDate) {
-      newErrors.date = 'Please select a date and time';
-    } else if (selectedDate < new Date()) {
-      newErrors.date = 'Please select a future date and time';
+      newErrors.date = 'Please select a date';
     }
-
+    if (!selectedTime) {
+      newErrors.time = 'Please select a time slot';
+    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -93,14 +140,15 @@ export default function Services() {
 
     try {
       const bookingData = {
-        datetime: selectedDate.toISOString(),
+        datetime: selectedTime, // Use the selected slot
         name: bookingForm.name.trim(),
         email: bookingForm.email.trim(),
         phone: bookingForm.phone.trim(),
-        serviceName: selectedService.name
+        serviceName: selectedService.name,
+        serviceDuration: selectedService.duration // <-- Added for backend validation
       };
 
-      const res = await fetch('https://my-hairstyles.onrender.com/disco/booking', {
+      const res = await fetch(`${API_BASE_URL}/disco/booking`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -123,11 +171,13 @@ export default function Services() {
 
       const data = JSON.parse(responseText);
       if (data.success) {
-        toast.success(`Booking for ${selectedService.name} on ${formatDate(selectedDate)} confirmed!`);
+        toast.success(`Booking for ${selectedService.name} on ${formatDate(new Date(selectedTime))} confirmed!`);
         setSubmitStatus({ type: 'success' });
         setSelectedService(null);
         setSelectedDate(null);
         setBookingForm({ name: '', email: '', phone: '' });
+        setAvailableSlots([]);
+        setSelectedTime(null);
       } else {
         const errorMessage = data.message || 'Booking failed.';
         toast.error(errorMessage);
@@ -150,12 +200,6 @@ export default function Services() {
   const handleDateChange = (date) => {
     setSelectedDate(date);
     if (errors.date) setErrors(prev => ({ ...prev, date: null }));
-  };
-
-  const filterTimeSlots = (time) => {
-    const day = time.getDay();
-    const hours = time.getHours();
-    return day !== 0 && hours >= 7 && hours <= 20;
   };
 
   const scrollToBookingForm = () => {
@@ -191,7 +235,7 @@ export default function Services() {
                     </div>
                     <div className="text-right">
                       <p className="text-2xl font-bold text-primary-600">Rs/- {service.price}</p>
-                      <p className="text-sm text-gray-500">{service.duration}</p>
+                      <p className="text-sm text-gray-500">{service.duration} min</p>
                     </div>
                   </div>
                   <button
@@ -222,23 +266,39 @@ export default function Services() {
 
               <form onSubmit={handleBooking} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Select Date and Time</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Select Date</label>
                   <DatePicker
                     selected={selectedDate}
                     onChange={handleDateChange}
-                    showTimeSelect
-                    timeIntervals={30}
-                    filterTime={filterTimeSlots}
                     minDate={new Date()}
-                    dateFormat="MMMM d, yyyy h:mm aa"
-                    placeholderText="Select appointment date and time"
+                    dateFormat="MMMM d, yyyy"
+                    placeholderText="Select appointment date"
                     className={`w-full p-2 border rounded-md ${errors.date ? 'border-red-500' : 'border-gray-300'}`}
                   />
                   {errors.date && <p className="mt-1 text-sm text-red-600">{errors.date}</p>}
-                  {selectedDate && (
-                    <p className="mt-1 text-sm text-gray-600">Your appointment: {formatDate(selectedDate)}</p>
-                  )}
                 </div>
+                {selectedDate && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Available Time Slots</label>
+                    {availableSlots.length > 0 ? (
+                      <select
+                        value={selectedTime || ''}
+                        onChange={e => setSelectedTime(e.target.value)}
+                        className="w-full p-2 border rounded-md"
+                      >
+                        <option value="" disabled>Select a time</option>
+                        {availableSlots.map(slot => (
+                          <option key={slot.toISOString()} value={slot.toISOString()}>
+                            {slot.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      <div className="text-red-600">No available slots for this day.</div>
+                    )}
+                    {errors.time && <p className="mt-1 text-sm text-red-600">{errors.time}</p>}
+                  </div>
+                )}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
                   <input
@@ -291,6 +351,8 @@ export default function Services() {
                       setSelectedService(null);
                       setErrors({});
                       setSubmitStatus(null);
+                      setAvailableSlots([]);
+                      setSelectedTime(null);
                     }}
                     className="text-cyan-600 hover:text-cyan-800 text-sm font-medium"
                   >

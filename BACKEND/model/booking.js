@@ -10,6 +10,10 @@ const bookingSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
+  serviceDuration: {
+    type: Number, // Duration in minutes
+    required: true,
+  },
   name: {
     type: String,
     required: true,
@@ -27,6 +31,12 @@ const bookingSchema = new mongoose.Schema({
     required: true,
     trim: true,
     match: [/^[6-9]\d{9}$/, 'Please enter a valid Indian phone number'],
-  }  
+  },
+  status: {
+    type: String,
+    enum: ['pending', 'accepted', 'rejected', 'cancelled'],
+    default: 'pending',
+    required: true,
+  }
 }, {timestamps: true,});
 module.exports = mongoose.model('Booking', bookingSchema);
