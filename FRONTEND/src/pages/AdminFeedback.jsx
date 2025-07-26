@@ -1,6 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { motion } from 'framer-motion';
+import { 
+  ArrowLeftIcon,
+  ChatBubbleLeftRightIcon,
+  UserIcon,
+  EnvelopeIcon,
+  ClockIcon,
+  TrashIcon,
+  ExclamationTriangleIcon
+} from '@heroicons/react/24/outline';
 
 // Use localhost for development, production URL for deployment
 const API_BASE_URL = import.meta.env.DEV 
@@ -97,32 +107,37 @@ const AdminFeedback = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading feedback...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600 dark:text-gray-300">Loading feedback...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
-      <div className="bg-white shadow">
+      <div className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Customer Feedback</h1>
-              <p className="text-gray-600">View and manage customer feedback</p>
-            </div>
-            <div className="flex space-x-3">
+            <div className="flex items-center space-x-4">
               <button
                 onClick={() => navigate('/admin/dashboard')}
-                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                className="p-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-200"
               >
-                Back to Dashboard
+                <ArrowLeftIcon className="h-6 w-6" />
               </button>
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Manage Feedback</h1>
+                <p className="text-gray-600 dark:text-gray-300">View and manage customer feedback</p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-3">
+              <span className="text-sm text-gray-600 dark:text-gray-300">
+                Total: {feedback.length}
+              </span>
             </div>
           </div>
         </div>
@@ -130,56 +145,77 @@ const AdminFeedback = () => {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-white shadow overflow-hidden sm:rounded-md">
-          {feedback.length === 0 ? (
-            <div className="text-center py-12">
-              <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-              </svg>
-              <h3 className="mt-2 text-sm font-medium text-gray-900">No feedback</h3>
-              <p className="mt-1 text-sm text-gray-500">No feedback has been submitted yet.</p>
+        {feedback.length === 0 ? (
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center py-12"
+          >
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-8">
+              <ChatBubbleLeftRightIcon className="mx-auto h-16 w-16 text-gray-400 dark:text-gray-500 mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No feedback</h3>
+              <p className="text-gray-500 dark:text-gray-400">No customer feedback has been submitted yet.</p>
             </div>
-          ) : (
-            <ul className="divide-y divide-gray-200">
-              {feedback.map((item) => (
-                <li key={item._id} className="px-6 py-4">
-                  <div className="flex items-center justify-between">
+          </motion.div>
+        ) : (
+          <div className="space-y-4">
+            {feedback.map((item, index) => (
+              <motion.div
+                key={item._id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className="bg-white dark:bg-gray-800 shadow-lg rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden"
+              >
+                <div className="p-6">
+                  <div className="flex items-start justify-between">
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center space-x-3">
-                            <p className="text-sm font-medium text-gray-900">
-                              {item.name}
-                            </p>
-                            <p className="text-sm text-gray-500">
-                              {item.email}
-                            </p>
-                          </div>
-                          <p className="text-sm text-gray-500 mt-1">
-                            {formatDate(item.createdAt)}
-                          </p>
-                          <div className="mt-2">
-                            <p className="text-sm text-gray-700 bg-gray-50 p-3 rounded-md">
-                              {item.message}
-                            </p>
-                          </div>
+                      <div className="flex items-center space-x-3 mb-4">
+                        <div className="flex items-center space-x-2">
+                          <UserIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+                          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                            {item.name}
+                          </h3>
                         </div>
-                        <div className="ml-4 flex-shrink-0">
-                          <button
-                            onClick={() => handleDeleteFeedback(item._id)}
-                            className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm font-medium"
-                          >
-                            Delete
-                          </button>
+                        <div className="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
+                          <EnvelopeIcon className="h-4 w-4" />
+                          <span>{item.email}</span>
+                        </div>
+                      </div>
+                      
+                      <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 mb-4">
+                        <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+                          {item.message}
+                        </p>
+                      </div>
+                      
+                      <div className="flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
+                        <div className="flex items-center space-x-1">
+                          <ClockIcon className="h-4 w-4" />
+                          <span>{formatDate(item.createdAt)}</span>
+                        </div>
+                        <div className="flex items-center space-x-1">
+                          <ExclamationTriangleIcon className="h-4 w-4" />
+                          <span>Feedback ID: {item._id.slice(-8)}</span>
                         </div>
                       </div>
                     </div>
+                    
+                    <div className="ml-6">
+                      <button
+                        onClick={() => handleDeleteFeedback(item._id)}
+                        className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center space-x-1"
+                      >
+                        <TrashIcon className="h-4 w-4" />
+                        <span>Delete</span>
+                      </button>
+                    </div>
                   </div>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

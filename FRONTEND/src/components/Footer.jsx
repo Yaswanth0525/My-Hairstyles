@@ -4,20 +4,20 @@ export default function Footer() {
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
-            <h3 className="text-lg font-semibold mb-4 ">Modern Cuts</h3>
+            <h3 className="text-lg font-semibold mb-4 text-white">Modern Cuts</h3>
             <p className="text-primary-300">
             Expert haircuts and grooming for gentlemen, kids, and seniors—style for every generation.
             </p>
           </div>
           <div>
-            <h3 className="text-lg font-semibold mb-4">Hours</h3>
+            <h3 className="text-lg font-semibold mb-4 text-white">Hours</h3>
             <ul className="space-y-2 text-primary-300">
               <li>Monday - Friday: 7am - 8pm</li>
               <li>Saturday - sunday:7am - 9pm</li>
             </ul>
           </div>
           <div>
-            <h3 className="text-lg font-semibold mb-4">Contact</h3>
+            <h3 className="text-lg font-semibold mb-4 text-white">Contact</h3>
             <ul className="space-y-2 text-primary-300 ">
               <li>Opposite Court ,Belagam</li>
               <li>Parvathipuram, Andhra Pradesh - 535501</li>

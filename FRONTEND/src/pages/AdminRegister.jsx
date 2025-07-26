@@ -71,10 +71,10 @@ const AdminRegister = () => {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                  <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">
           Admin Registration
         </h2>
-        <p className="mt-2 text-center text-sm text-gray-600">
+                  <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-300">
           Create the first admin account
         </p>
       </div>
@@ -83,7 +83,7 @@ const AdminRegister = () => {
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
-              <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Username
               </label>
               <div className="mt-1">
@@ -100,7 +100,7 @@ const AdminRegister = () => {
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Email
               </label>
               <div className="mt-1">
@@ -117,7 +117,7 @@ const AdminRegister = () => {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Password
               </label>
               <div className="mt-1">
@@ -134,7 +134,7 @@ const AdminRegister = () => {
             </div>
 
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Confirm Password
               </label>
               <div className="mt-1">

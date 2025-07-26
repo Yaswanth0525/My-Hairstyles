@@ -36,7 +36,7 @@ const formBooking = async (req, res) => {
       name,
       email,
       phone,
-      serviceName,
+      serviceName, 
       serviceDuration, // <-- Save duration
       status: 'pending'
     });

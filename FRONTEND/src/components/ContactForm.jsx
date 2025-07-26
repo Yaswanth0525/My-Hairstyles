@@ -150,13 +150,13 @@ export default function ContactForm() {
   };
   
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <h2 className="text-2xl font-semibold mb-6">Send us a message</h2>
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+      <h2 className="text-2xl font-semibold mb-6 text-gray-900 dark:text-white">Send us a message</h2>
       
       
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                        <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Name
           </label>
           <input
@@ -166,14 +166,14 @@ export default function ContactForm() {
             placeholder='Enter your name'
             value={formData.name}
             onChange={handleChange}
-            className={`w-full p-2 border rounded-md focus:ring-2 focus:ring-cyan-300 focus:border-cyan-500 outline-none ${errors.name ? 'border-red-500' : 'border-gray-300'}`}
+            className={`w-full p-2 border rounded-md focus:ring-2 focus:ring-cyan-300 focus:border-cyan-500 outline-none dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:placeholder-gray-400 ${errors.name ? 'border-red-500' : 'border-gray-300'}`}
             aria-invalid={errors.name ? "true" : "false"}
           />
           {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
         </div>
         
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                        <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Email
           </label>
           <input
@@ -183,14 +183,14 @@ export default function ContactForm() {
             type="email"
             value={formData.email}
             onChange={handleChange}
-            className={`w-full p-2 border rounded-md focus:ring-2 focus:ring-cyan-300 focus:border-cyan-500 outline-none ${errors.email ? 'border-red-500' : 'border-gray-300'}`}
+            className={`w-full p-2 border rounded-md focus:ring-2 focus:ring-cyan-300 focus:border-cyan-500 outline-none dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:placeholder-gray-400 ${errors.email ? 'border-red-500' : 'border-gray-300'}`}
             aria-invalid={errors.email ? "true" : "false"}
           />
           {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
         </div>
         
         <div>
-          <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
+                        <label htmlFor="message" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Message
           </label>
           <textarea
@@ -200,7 +200,7 @@ export default function ContactForm() {
             rows={4}
             value={formData.message}
             onChange={handleChange}
-            className={`w-full p-2 border rounded-md focus:ring-2 focus:ring-cyan-300 focus:border-cyan-500 outline-none ${errors.message ? 'border-red-500' : 'border-gray-300'}`}
+            className={`w-full p-2 border rounded-md focus:ring-2 focus:ring-cyan-300 focus:border-cyan-500 outline-none dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:placeholder-gray-400 ${errors.message ? 'border-red-500' : 'border-gray-300'}`}
             aria-invalid={errors.message ? "true" : "false"}
           />
           {errors.message && <p className="mt-1 text-sm text-red-600">{errors.message}</p>}
