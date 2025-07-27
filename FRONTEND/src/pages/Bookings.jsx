@@ -5,6 +5,7 @@ import { CalendarIcon, ClockIcon, UserIcon, PhoneIcon, EnvelopeIcon, TagIcon } f
 
 const Bookings = () => {
   const [bookings, setBookings] = useState([]);
+  const [groupedBookings, setGroupedBookings] = useState({});
   const [loading, setLoading] = useState(true);
 
   // Use localhost for development, production URL for deployment
@@ -27,6 +28,7 @@ const Bookings = () => {
       const data = await response.json();
       if (data.success) {
         setBookings(data.bookings);
+        setGroupedBookings(data.groupedBookings || {});
       } else {
         toast.error(data.message || 'Failed to fetch bookings');
       }
@@ -184,63 +186,142 @@ const Bookings = () => {
             </p>
           </motion.div>
         ) : (
-          <div className="grid gap-6">
-            {bookings.map((booking, index) => (
-              <motion.div
-                key={booking._id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 dark:border-gray-700 overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
-              >
-                <div className="p-6">
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center space-x-3">
-                      <div className="h-12 w-12 bg-primary-100 rounded-xl flex items-center justify-center">
-                        <UserIcon className="h-6 w-6 text-primary-600" />
+          <div className="space-y-8">
+            {Object.keys(groupedBookings).length > 0 ? (
+              Object.entries(groupedBookings).map(([date, dateBookings], dateIndex) => (
+                <motion.div
+                  key={date}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: dateIndex * 0.1 }}
+                  className="space-y-4"
+                >
+                  <div className="flex items-center space-x-3 mb-4">
+                    <CalendarIcon className="h-6 w-6 text-primary-600" />
+                    <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                      {formatDate(date + 'T00:00:00')}
+                    </h2>
+                    <span className="bg-primary-100 text-primary-800 px-3 py-1 rounded-full text-sm font-medium">
+                      {dateBookings.length} booking{dateBookings.length !== 1 ? 's' : ''}
+                    </span>
+                  </div>
+                  
+                  <div className="grid gap-4">
+                    {dateBookings.map((booking, index) => (
+                      <motion.div
+                        key={booking._id}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: (dateIndex * 0.1) + (index * 0.05) }}
+                        className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl shadow-lg border border-white/20 dark:border-gray-700 overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-[1.01]"
+                      >
+                        <div className="p-6">
+                          <div className="flex items-start justify-between mb-4">
+                            <div className="flex items-center space-x-3">
+                              <div className="h-12 w-12 bg-primary-100 rounded-xl flex items-center justify-center">
+                                <UserIcon className="h-6 w-6 text-primary-600" />
+                              </div>
+                              <div>
+                                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{booking.name}</h3>
+                                <div className="flex items-center space-x-2 mt-1">
+                                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(booking.status)}`}>
+                                    <span className="mr-1">{getStatusIcon(booking.status)}</span>
+                                    {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-3">
+                              <div className="flex items-center space-x-3">
+                                <EnvelopeIcon className="h-5 w-5 text-gray-400" />
+                                <span className="text-gray-700 dark:text-gray-300">{booking.email}</span>
+                              </div>
+                              <div className="flex items-center space-x-3">
+                                <PhoneIcon className="h-5 w-5 text-gray-400" />
+                                <span className="text-gray-700 dark:text-gray-300">{booking.phone}</span>
+                              </div>
+                            </div>
+                            
+                            <div className="space-y-3">
+                              <div className="flex items-center space-x-3">
+                                <TagIcon className="h-5 w-5 text-gray-400" />
+                                <span className="text-gray-700 dark:text-gray-300 font-medium">{booking.serviceName}</span>
+                              </div>
+                              <div className="flex items-center space-x-3">
+                                <ClockIcon className="h-5 w-5 text-gray-400" />
+                                <span className="text-gray-700 dark:text-gray-300">{formatTime(booking.datetime)}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
+              ))
+            ) : (
+              <div className="grid gap-6">
+                {bookings.map((booking, index) => (
+                  <motion.div
+                    key={booking._id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 dark:border-gray-700 overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
+                  >
+                    <div className="p-6">
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex items-center space-x-3">
+                          <div className="h-12 w-12 bg-primary-100 rounded-xl flex items-center justify-center">
+                            <UserIcon className="h-6 w-6 text-primary-600" />
+                          </div>
+                          <div>
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{booking.name}</h3>
+                            <div className="flex items-center space-x-2 mt-1">
+                              <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(booking.status)}`}>
+                                <span className="mr-1">{getStatusIcon(booking.status)}</span>
+                                {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                      <div>
-                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{booking.name}</h3>
-                        <div className="flex items-center space-x-2 mt-1">
-                          <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(booking.status)}`}>
-                            <span className="mr-1">{getStatusIcon(booking.status)}</span>
-                            {booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}
-                          </span>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-3">
+                          <div className="flex items-center space-x-3">
+                            <EnvelopeIcon className="h-5 w-5 text-gray-400" />
+                            <span className="text-gray-700 dark:text-gray-300">{booking.email}</span>
+                          </div>
+                          <div className="flex items-center space-x-3">
+                            <PhoneIcon className="h-5 w-5 text-gray-400" />
+                            <span className="text-gray-700 dark:text-gray-300">{booking.phone}</span>
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-3">
+                          <div className="flex items-center space-x-3">
+                            <TagIcon className="h-5 w-5 text-gray-400" />
+                            <span className="text-gray-700 dark:text-gray-300 font-medium">{booking.serviceName}</span>
+                          </div>
+                          <div className="flex items-center space-x-3">
+                            <CalendarIcon className="h-5 w-5 text-gray-400" />
+                            <span className="text-gray-700 dark:text-gray-300">{formatDate(booking.datetime)}</span>
+                          </div>
+                          <div className="flex items-center space-x-3">
+                            <ClockIcon className="h-5 w-5 text-gray-400" />
+                            <span className="text-gray-700 dark:text-gray-300">{formatTime(booking.datetime)}</span>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-3">
-                      <div className="flex items-center space-x-3">
-                        <EnvelopeIcon className="h-5 w-5 text-gray-400" />
-                        <span className="text-gray-700 dark:text-gray-300">{booking.email}</span>
-                      </div>
-                      <div className="flex items-center space-x-3">
-                        <PhoneIcon className="h-5 w-5 text-gray-400" />
-                        <span className="text-gray-700 dark:text-gray-300">{booking.phone}</span>
-                      </div>
-                    </div>
-                    
-                    <div className="space-y-3">
-                      <div className="flex items-center space-x-3">
-                        <TagIcon className="h-5 w-5 text-gray-400" />
-                        <span className="text-gray-700 dark:text-gray-300 font-medium">{booking.serviceName}</span>
-                      </div>
-                      <div className="flex items-center space-x-3">
-                        <CalendarIcon className="h-5 w-5 text-gray-400" />
-                        <span className="text-gray-700 dark:text-gray-300">{formatDate(booking.datetime)}</span>
-                      </div>
-                      <div className="flex items-center space-x-3">
-                        <ClockIcon className="h-5 w-5 text-gray-400" />
-                        <span className="text-gray-700 dark:text-gray-300">{formatTime(booking.datetime)}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
+                  </motion.div>
+                ))}
+              </div>
+            )}
           </div>
         )}
       </div>
