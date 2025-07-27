@@ -18,7 +18,7 @@ export default function Navbar() {
 
   return (
     <header className="bg-white shadow-sm">
-      <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" aria-label="Top">
+              <nav className="w-full px-4 sm:px-6 lg:px-8" aria-label="Top">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
             <Link to="/" className="text-2xl font-bold text-primary-900">

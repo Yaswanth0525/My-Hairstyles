@@ -109,6 +109,42 @@ const emailTemplates = {
         </div>
       </div>
     `
+  }),
+
+  // Contact form notification to owner
+  contactNotification: (contactData) => ({
+    subject: 'New Contact Form Submission - My Hairstyles',
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
+        <div style="background-color: #ffffff; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+          <h2 style="color: #333; text-align: center; margin-bottom: 30px;">📧 New Contact Form Submission</h2>
+          
+          <div style="background-color: #e3f2fd; padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #2196f3;">
+            <h3 style="color: #1565c0; margin-top: 0;">💬 Someone has sent you a message!</h3>
+            <p style="color: #1565c0; margin-bottom: 0;">Please review and respond to this inquiry.</p>
+          </div>
+          
+          <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+            <h3 style="color: #495057; margin-top: 0;">📋 Contact Details</h3>
+            <p><strong>Name:</strong> ${contactData.name}</p>
+            <p><strong>Email:</strong> ${contactData.email}</p>
+            <p><strong>Message:</strong></p>
+            <div style="background-color: #ffffff; padding: 15px; border-radius: 5px; border: 1px solid #dee2e6; margin-top: 10px;">
+              <p style="margin: 0; white-space: pre-wrap; color: #495057;">${contactData.message}</p>
+            </div>
+            <p style="margin-top: 15px; color: #6c757d; font-size: 14px;">
+              <strong>Submitted:</strong> ${new Date().toLocaleString()}
+            </p>
+          </div>
+          
+          <div style="text-align: center; margin-top: 30px;">
+            <p style="color: #6c757d; font-size: 14px;">
+              Please respond to this customer inquiry as soon as possible.
+            </p>
+          </div>
+        </div>
+      </div>
+    `
   })
 };
 

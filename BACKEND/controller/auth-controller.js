@@ -90,7 +90,19 @@ const formFeedback = async(req,res)=>{
             message
         })
         await newFeedback.save();
-        // console.log('Feedback saved successfully');
+        
+        // Send email notification to owner
+        const ownerEmail = process.env.OWNER_EMAIL || 'your-email@gmail.com';
+        const emailResult = await sendEmail(ownerEmail, 'contactNotification', {
+            name,
+            email,
+            message
+        });
+        
+        if (!emailResult.success) {
+            console.error('Failed to send contact notification email:', emailResult.error);
+        }
+        
         return res.status(200).json({
             success: true,
             message: 'Feedback Submitted',

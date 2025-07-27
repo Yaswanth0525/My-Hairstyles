@@ -50,7 +50,7 @@ export default function Home() {
         }}
       >
         <div className="absolute inset-0 bg-black/50" />
-        <div className="relative w-full h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center">
+        <div className="relative w-full h-full px-4 sm:px-6 lg:px-8 flex items-center">
           <div className="text-white">
             <motion.h1
               initial={{ y: 20, opacity: 0 }}
@@ -95,7 +95,7 @@ export default function Home() {
 
       {/* About Section */}
       <section className="w-full py-16 bg-white dark:bg-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="w-full px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
@@ -155,7 +155,7 @@ export default function Home() {
 
       {/* Features Section */}
       <section className="w-full py-16 bg-gray-50 dark:bg-gray-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="w-full px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -204,7 +204,7 @@ export default function Home() {
 
       {/* Testimonials Section */}
       <section className="w-full py-16 bg-white dark:bg-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="w-full px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -242,7 +242,7 @@ export default function Home() {
 
       {/* CTA Section */}
       <section className="w-full py-16 bg-primary-900 dark:bg-primary-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="w-full px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
