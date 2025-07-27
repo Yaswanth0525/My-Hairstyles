@@ -22,6 +22,7 @@ const API_BASE_URL = import.meta.env.DEV
 
 const AdminBookings = () => {
   const [bookings, setBookings] = useState([]);
+  const [groupedBookings, setGroupedBookings] = useState({});
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
   const navigate = useNavigate();
@@ -59,6 +60,7 @@ const AdminBookings = () => {
       const data = await response.json();
       if (data.success) {
         setBookings(data.bookings);
+        setGroupedBookings(data.groupedBookings || {});
       } else {
         toast.error(data.message || 'Failed to fetch bookings');
       }
@@ -163,6 +165,24 @@ const AdminBookings = () => {
     });
   };
 
+  const formatDate = (dateTimeString) => {
+    const date = new Date(dateTimeString);
+    return date.toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  };
+
+  const formatTime = (dateTimeString) => {
+    const date = new Date(dateTimeString);
+    return date.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+
   const filteredBookings = bookings.filter(booking => {
     if (filter === 'all') return true;
     return booking.status === filter;
@@ -255,94 +275,217 @@ const AdminBookings = () => {
             </div>
           </motion.div>
         ) : (
-          <div className="space-y-4">
-            {filteredBookings.map((booking, index) => (
-              <motion.div
-                key={booking._id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className="bg-white dark:bg-gray-800 shadow-lg rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden"
-              >
-                <div className="p-6">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center space-x-3 mb-3">
-                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                          {booking.name}
-                        </h3>
-                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(booking.status)}`}>
-                          {getStatusIcon(booking.status)}
-                          <span className="ml-1 capitalize">{booking.status}</span>
-                        </span>
-                      </div>
-                      
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                        <div className="space-y-2">
-                          <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-300">
-                            <EnvelopeIcon className="h-4 w-4" />
-                            <span>{booking.email}</span>
-                          </div>
-                          <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-300">
-                            <PhoneIcon className="h-4 w-4" />
-                            <span>{booking.phone}</span>
-                          </div>
-                        </div>
-                        <div className="space-y-2">
-                          <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-300">
-                            <UserIcon className="h-4 w-4" />
-                            <span className="font-medium">Service:</span>
-                            <span>{booking.serviceName}</span>
-                          </div>
-                          <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-300">
-                            <ClockIcon className="h-4 w-4" />
-                            <span className="font-medium">Date & Time:</span>
-                            <span>{formatDateTime(booking.datetime)}</span>
-                          </div>
-                        </div>
-                      </div>
+          <div className="space-y-8">
+            {Object.keys(groupedBookings).length > 0 ? (
+              Object.entries(groupedBookings).map(([date, dateBookings], dateIndex) => {
+                // Filter bookings by status if filter is not 'all'
+                const filteredDateBookings = filter === 'all' 
+                  ? dateBookings 
+                  : dateBookings.filter(booking => booking.status === filter);
+                
+                if (filteredDateBookings.length === 0) return null;
+                
+                return (
+                  <motion.div
+                    key={date}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: dateIndex * 0.1 }}
+                    className="space-y-4"
+                  >
+                    <div className="flex items-center space-x-3 mb-4">
+                      <CalendarIcon className="h-6 w-6 text-blue-600" />
+                      <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                        {formatDate(date + 'T00:00:00')}
+                      </h2>
+                      <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                        {filteredDateBookings.length} booking{filteredDateBookings.length !== 1 ? 's' : ''}
+                      </span>
                     </div>
                     
-                    <div className="ml-6 flex flex-col space-y-2">
-                      {/* Status Update Buttons */}
-                      {booking.status === 'pending' && (
-                        <div className="flex space-x-2">
+                    <div className="space-y-4">
+                      {filteredDateBookings.map((booking, index) => (
+                        <motion.div
+                          key={booking._id}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: (dateIndex * 0.1) + (index * 0.05) }}
+                          className="bg-white dark:bg-gray-800 shadow-lg rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden"
+                        >
+                          <div className="p-6">
+                            <div className="flex items-start justify-between">
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center space-x-3 mb-3">
+                                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                                    {booking.name}
+                                  </h3>
+                                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(booking.status)}`}>
+                                    {getStatusIcon(booking.status)}
+                                    <span className="ml-1 capitalize">{booking.status}</span>
+                                  </span>
+                                </div>
+                                
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                  <div className="space-y-2">
+                                    <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-300">
+                                      <EnvelopeIcon className="h-4 w-4" />
+                                      <span>{booking.email}</span>
+                                    </div>
+                                    <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-300">
+                                      <PhoneIcon className="h-4 w-4" />
+                                      <span>{booking.phone}</span>
+                                    </div>
+                                  </div>
+                                  <div className="space-y-2">
+                                    <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-300">
+                                      <UserIcon className="h-4 w-4" />
+                                      <span className="font-medium">Service:</span>
+                                      <span>{booking.serviceName}</span>
+                                    </div>
+                                    <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-300">
+                                      <ClockIcon className="h-4 w-4" />
+                                      <span className="font-medium">Time:</span>
+                                      <span>{formatTime(booking.datetime)}</span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              
+                              <div className="ml-6 flex flex-col space-y-2">
+                                {/* Status Update Buttons */}
+                                {booking.status === 'pending' && (
+                                  <div className="flex space-x-2">
+                                    <button
+                                      onClick={() => handleStatusUpdate(booking._id, 'accepted')}
+                                      className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center space-x-1"
+                                    >
+                                      <CheckCircleIcon className="h-4 w-4" />
+                                      <span>Accept</span>
+                                    </button>
+                                    <button
+                                      onClick={() => handleStatusUpdate(booking._id, 'rejected')}
+                                      className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center space-x-1"
+                                    >
+                                      <XCircleIcon className="h-4 w-4" />
+                                      <span>Reject</span>
+                                    </button>
+                                  </div>
+                                )}
+                                {booking.status === 'accepted' && (
+                                  <button
+                                    onClick={() => handleStatusUpdate(booking._id, 'cancelled')}
+                                    className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200"
+                                  >
+                                    Cancel
+                                  </button>
+                                )}
+                                <button
+                                  onClick={() => handleDeleteBooking(booking._id)}
+                                  className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center space-x-1"
+                                >
+                                  <TrashIcon className="h-4 w-4" />
+                                  <span>Delete</span>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </motion.div>
+                );
+              })
+            ) : (
+              <div className="space-y-4">
+                {filteredBookings.map((booking, index) => (
+                  <motion.div
+                    key={booking._id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    className="bg-white dark:bg-gray-800 shadow-lg rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden"
+                  >
+                    <div className="p-6">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center space-x-3 mb-3">
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                              {booking.name}
+                            </h3>
+                            <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(booking.status)}`}>
+                              {getStatusIcon(booking.status)}
+                              <span className="ml-1 capitalize">{booking.status}</span>
+                            </span>
+                          </div>
+                          
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div className="space-y-2">
+                              <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-300">
+                                <EnvelopeIcon className="h-4 w-4" />
+                                <span>{booking.email}</span>
+                              </div>
+                              <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-300">
+                                <PhoneIcon className="h-4 w-4" />
+                                <span>{booking.phone}</span>
+                              </div>
+                            </div>
+                            <div className="space-y-2">
+                              <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-300">
+                                <UserIcon className="h-4 w-4" />
+                                <span className="font-medium">Service:</span>
+                                <span>{booking.serviceName}</span>
+                              </div>
+                              <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-300">
+                                <ClockIcon className="h-4 w-4" />
+                                <span className="font-medium">Date & Time:</span>
+                                <span>{formatDateTime(booking.datetime)}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="ml-6 flex flex-col space-y-2">
+                          {/* Status Update Buttons */}
+                          {booking.status === 'pending' && (
+                            <div className="flex space-x-2">
+                              <button
+                                onClick={() => handleStatusUpdate(booking._id, 'accepted')}
+                                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center space-x-1"
+                              >
+                                <CheckCircleIcon className="h-4 w-4" />
+                                <span>Accept</span>
+                              </button>
+                              <button
+                                onClick={() => handleStatusUpdate(booking._id, 'rejected')}
+                                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center space-x-1"
+                              >
+                                <XCircleIcon className="h-4 w-4" />
+                                <span>Reject</span>
+                              </button>
+                            </div>
+                          )}
+                          {booking.status === 'accepted' && (
+                            <button
+                              onClick={() => handleStatusUpdate(booking._id, 'cancelled')}
+                              className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200"
+                            >
+                              Cancel
+                            </button>
+                          )}
                           <button
-                            onClick={() => handleStatusUpdate(booking._id, 'accepted')}
-                            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center space-x-1"
-                          >
-                            <CheckCircleIcon className="h-4 w-4" />
-                            <span>Accept</span>
-                          </button>
-                          <button
-                            onClick={() => handleStatusUpdate(booking._id, 'rejected')}
+                            onClick={() => handleDeleteBooking(booking._id)}
                             className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center space-x-1"
                           >
-                            <XCircleIcon className="h-4 w-4" />
-                            <span>Reject</span>
+                            <TrashIcon className="h-4 w-4" />
+                            <span>Delete</span>
                           </button>
                         </div>
-                      )}
-                      {booking.status === 'accepted' && (
-                        <button
-                          onClick={() => handleStatusUpdate(booking._id, 'cancelled')}
-                          className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200"
-                        >
-                          Cancel
-                        </button>
-                      )}
-                      <button
-                        onClick={() => handleDeleteBooking(booking._id)}
-                        className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center space-x-1"
-                      >
-                        <TrashIcon className="h-4 w-4" />
-                        <span>Delete</span>
-                      </button>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
+                  </motion.div>
+                ))}
+              </div>
+            )}
           </div>
         )}
       </div>

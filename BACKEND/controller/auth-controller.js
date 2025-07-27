@@ -6,6 +6,49 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { sendEmail } = require('../config/email');
 
+// Function to clean up expired bookings (bookings from previous days)
+const cleanupExpiredBookings = async () => {
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Start of today
+    
+    const result = await Booking.deleteMany({
+      datetime: { $lt: today }
+    });
+    
+    console.log(`Cleaned up ${result.deletedCount} expired bookings`);
+    return result.deletedCount;
+  } catch (error) {
+    console.error('Error cleaning up expired bookings:', error);
+    return 0;
+  }
+};
+
+// Function to group bookings by date
+const groupBookingsByDate = (bookings) => {
+  const grouped = {};
+  
+  bookings.forEach(booking => {
+    const date = new Date(booking.datetime);
+    const dateKey = date.toISOString().split('T')[0]; // YYYY-MM-DD format
+    
+    if (!grouped[dateKey]) {
+      grouped[dateKey] = [];
+    }
+    grouped[dateKey].push(booking);
+  });
+  
+  // Sort dates and bookings within each date
+  const sortedDates = Object.keys(grouped).sort((a, b) => new Date(a) - new Date(b));
+  const sortedGrouped = {};
+  
+  sortedDates.forEach(date => {
+    sortedGrouped[date] = grouped[date].sort((a, b) => new Date(a.datetime) - new Date(b.datetime));
+  });
+  
+  return sortedGrouped;
+};
+
 const formBooking = async (req, res) => {
   try {
     const { datetime, name, email, phone, serviceName, serviceDuration } = req.body;
@@ -191,11 +234,24 @@ const checkSlotAvailability = async (req, res) => {
 // Public endpoint to get all bookings (for users to view)
 const getAllBookingsPublic = async (req, res) => {
   try {
-    const bookings = await Booking.find().sort({ datetime: -1 });
+    // Clean up expired bookings first
+    await cleanupExpiredBookings();
+    
+    // Get all bookings from today onwards
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    const bookings = await Booking.find({
+      datetime: { $gte: today }
+    }).sort({ datetime: 1 });
+    
+    // Group bookings by date
+    const groupedBookings = groupBookingsByDate(bookings);
     
     return res.status(200).json({
       success: true,
       bookings: bookings,
+      groupedBookings: groupedBookings,
     });
   } catch (err) {
     console.error('Get all bookings error:', err);
@@ -210,11 +266,24 @@ const getAllBookingsPublic = async (req, res) => {
 // Admin-only endpoint to get all bookings
 const getAllBookings = async (req, res) => {
   try {
-    const bookings = await Booking.find().sort({ datetime: -1 });
+    // Clean up expired bookings first
+    await cleanupExpiredBookings();
+    
+    // Get all bookings from today onwards
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    const bookings = await Booking.find({
+      datetime: { $gte: today }
+    }).sort({ datetime: 1 });
+    
+    // Group bookings by date
+    const groupedBookings = groupBookingsByDate(bookings);
     
     return res.status(200).json({
       success: true,
       bookings: bookings,
+      groupedBookings: groupedBookings,
     });
   } catch (err) {
     console.error('Get all bookings error:', err);
@@ -510,7 +579,9 @@ module.exports = {
   adminRegister,
   getAllFeedback,
   deleteFeedback,
-  getUnavailableSlots
+  getUnavailableSlots,
+  cleanupExpiredBookings,
+  groupBookingsByDate
 };
 
 
