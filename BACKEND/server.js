@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/auth-routes');
 const Booking = require('./model/booking');
+const { cleanupExpiredBookings } = require('./controller/auth-controller');
 const app = express();
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
@@ -72,6 +73,46 @@ app.set('trust proxy', 1)
 // });
 
 app.use('/disco/', authRoutes);
+
+// Manual cleanup endpoint for testing
+app.post('/disco/cleanup', async (req, res) => {
+  try {
+    const deletedCount = await cleanupExpiredBookings();
+    res.json({
+      success: true,
+      message: `Cleaned up ${deletedCount} expired bookings`,
+      deletedCount
+    });
+  } catch (error) {
+    console.error('Cleanup error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to cleanup expired bookings',
+      error: error.message
+    });
+  }
+});
+
+// Scheduled cleanup - run every day at 2 AM
+const scheduleCleanup = () => {
+  const now = new Date();
+  const tomorrow = new Date(now);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  tomorrow.setHours(2, 0, 0, 0);
+  
+  const timeUntilCleanup = tomorrow.getTime() - now.getTime();
+  
+  setTimeout(async () => {
+    console.log('Running scheduled cleanup...');
+    await cleanupExpiredBookings();
+    
+    // Schedule next cleanup for tomorrow
+    scheduleCleanup();
+  }, timeUntilCleanup);
+};
+
+// Start scheduled cleanup
+scheduleCleanup();
 
 // Error handling middleware
 app.use((err, req, res, next) => {
