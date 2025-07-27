@@ -21,7 +21,7 @@ export default function Footer() {
             <ul className="space-y-2 text-primary-300 ">
               <li>Opposite Court ,Belagam</li>
               <li>Parvathipuram, Andhra Pradesh - 535501</li>
-              <li>Phone: +91 9964738848</li>
+              <li>Phone: +91 9963738848</li>
               <li>Email: discohairstyles@gmail.com</li>
             </ul>
           </div>
