@@ -121,7 +121,7 @@ const Bookings = () => {
         animate={{ opacity: 1, y: 0 }}
         className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-sm border-b border-white/20 dark:border-gray-700"
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="w-full px-4 sm:px-6 lg:px-8">
           <div className="py-8">
             <div className="flex items-center space-x-3 mb-2">
               <div className="h-10 w-10 bg-primary-600 rounded-lg flex items-center justify-center">
@@ -139,7 +139,7 @@ const Bookings = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6"
+        className="w-full px-4 sm:px-6 lg:px-8 py-6"
       >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
           <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl p-4 shadow-sm border border-white/20 dark:border-gray-700">
@@ -168,7 +168,7 @@ const Bookings = () => {
       </motion.div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+      <div className="w-full px-4 sm:px-6 lg:px-8 pb-8">
         {bookings.length === 0 ? (
           <motion.div 
             initial={{ opacity: 0, scale: 0.9 }}
