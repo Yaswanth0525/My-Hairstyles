@@ -19,11 +19,12 @@ export default function Footer() {
           <div>
             <h3 className="text-lg font-semibold mb-4 text-white">Contact</h3>
             <ul className="space-y-2 text-primary-300 ">
-              <li>Opposite Court ,Belagam</li>
-              <li>Parvathipuram, Andhra Pradesh - 535501</li>
-              <li>Phone: +91 9964738848</li>
-              <li>Email: discohairstyles@gmail.com</li>
-            </ul>
+              {/* <ul class="list-none space-y-1 text-gray-700"> */}
+  <li><strong>Address:</strong> Opposite Court, Belagam</li>
+  <li><strong>Location:</strong> Parvathipuram, Andhra Pradesh – 535501</li>
+  <li><strong>Phone:</strong> +91 99637 38848</li>
+  <li>Email:<a href="mailto:discohairstyles@gmail.com" class="text-blue-600 hover:none">discohairstyles@gmail.com</a></li>
+</ul>
           </div>
         </div>
         <div className="mt-8 pt-8 border-t border-primary-800 text-center text-primary-400">
