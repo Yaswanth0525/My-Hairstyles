@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom';
+import barbershopImg from '../images/ShopImage.jpeg';
 import { 
   CheckCircleIcon,
   StarIcon,
@@ -44,7 +45,7 @@ export default function Home() {
         transition={{ duration: 0.5 }}
         className="relative w-full h-screen bg-gradient-to-r from-primary-900 to-primary-800"
         style={{
-          backgroundImage: 'url(https://w0.peakpx.com/wallpaper/859/38/HD-wallpaper-barber-shop-shop-barber-rouge-chaise.jpg)',
+          backgroundImage: `url(${barbershopImg})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}
