@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom';
-import barbershopImg from '../images/ShopImage.jpeg';
+import barbershopImg from '../images/Barber-Shop.jpg';
 import { 
   CheckCircleIcon,
   StarIcon,
