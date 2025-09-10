@@ -38,6 +38,20 @@ const services = [
     price: 120,
     duration: 60,
   },
+  {
+    id: 5,
+    name: 'Hair Color',
+    description: 'Professional hair coloring with premium products',
+    price: 200,
+    duration: 90,
+  },
+  {
+    id: 6,
+    name: 'Facial',
+    description: 'Rejuvenating facial treatment for healthy glowing skin',
+    price: 150,
+    duration: 60,
+  },
 ];
 
 function generateSlots(startHour, endHour, intervalMinutes, date) {
@@ -106,7 +120,7 @@ export default function Services() {
       setSelectedTime(null);
       return;
     }
-    const dateStr = selectedDate.toISOString().slice(0, 10); // 'YYYY-MM-DD'
+    const dateStr = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata' }).format(selectedDate); // IST YYYY-MM-DD
     const url = `${API_BASE_URL}/disco/unavailable-slots?date=${dateStr}&serviceName=${encodeURIComponent(selectedService.name)}`;
     
     console.log('Fetching unavailable slots from:', url);
@@ -319,13 +333,13 @@ export default function Services() {
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Available Time Slots</label>
                     {availableSlots.length > 0 ? (
                       <select
-                        value={selectedTime || ''}
-                        onChange={e => setSelectedTime(e.target.value)}
+                        value={selectedTime ?? ''}
+                        onChange={e => setSelectedTime(Number(e.target.value))}
                         className="w-full p-2 border rounded-md dark:bg-gray-700 dark:text-white dark:border-gray-600"
                       >
                         <option value="" disabled>Select a time</option>
                         {availableSlots.map(slot => (
-                          <option key={slot.toISOString()} value={slot.toISOString()}>
+                          <option key={slot.getTime()} value={slot.getTime()}>
                             {slot.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                           </option>
                         ))}

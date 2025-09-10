@@ -30,7 +30,7 @@ const groupBookingsByDate = (bookings) => {
   
   bookings.forEach(booking => {
     const date = new Date(booking.datetime);
-    const dateKey = date.toISOString().split('T')[0]; // YYYY-MM-DD format
+    const dateKey = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata' }).format(date); // IST YYYY-MM-DD
     
     if (!grouped[dateKey]) {
       grouped[dateKey] = [];
@@ -61,9 +61,11 @@ const formBooking = async (req, res) => {
       });
     }
 
+    const parsedDatetime = new Date(datetime);
+
     // Check if booking for the same datetime already exists (overlap logic can be improved)
     const checkDate = await Booking.findOne({ 
-      datetime,
+      datetime: parsedDatetime,
       status: { $nin: ['cancelled', 'rejected'] } // Only check active bookings
     });
     if (checkDate) {
@@ -75,7 +77,7 @@ const formBooking = async (req, res) => {
 
     // Create and save new booking
     const newBooking = new Booking({
-      datetime,
+      datetime: parsedDatetime,
       name,
       email,
       phone,
@@ -534,7 +536,8 @@ const SERVICE_DURATIONS = {
   "Beard Trim": 20,
   "Hot Towel Shave": 30,
   "Hair & Beard Combo": 60,
-  // Add all your services here
+  "Hair Color": 30,
+  "Facial": 60,
 };
 
 const getUnavailableSlots = async (req, res) => {
@@ -545,8 +548,8 @@ const getUnavailableSlots = async (req, res) => {
     const serviceDuration = SERVICE_DURATIONS[serviceName];
     if (!serviceDuration) return res.status(400).json({ success: false, message: 'Invalid service' });
 
-    const dayStart = new Date(date + 'T00:00:00');
-    const dayEnd = new Date(date + 'T23:59:59');
+    const dayStart = new Date(`${date}T00:00:00+05:30`);
+    const dayEnd = new Date(`${date}T23:59:59+05:30`);
 
     const bookings = await Booking.find({
       serviceName,

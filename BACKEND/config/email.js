@@ -25,7 +25,7 @@ const emailTemplates = {
             <p><strong>Email:</strong> ${bookingData.email}</p>
             <p><strong>Phone:</strong> ${bookingData.phone}</p>
             <p><strong>Service:</strong> ${bookingData.serviceName}</p>
-            <p><strong>Date & Time:</strong> ${new Date(bookingData.datetime).toLocaleString()}</p>
+            <p><strong>Date & Time:</strong> ${new Date(bookingData.datetime).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
             <p><strong>Duration:</strong> ${bookingData.serviceDuration} minutes</p>
             <p><strong>Status:</strong> <span style="color: #ffc107; font-weight: bold;">Pending</span></p>
           </div>
@@ -56,7 +56,7 @@ const emailTemplates = {
           <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
             <h3 style="color: #495057; margin-top: 0;">📋 Booking Details</h3>
             <p><strong>Service:</strong> ${bookingData.serviceName}</p>
-            <p><strong>Date & Time:</strong> ${new Date(bookingData.datetime).toLocaleString()}</p>
+            <p><strong>Date & Time:</strong> ${new Date(bookingData.datetime).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
             <p><strong>Duration:</strong> ${bookingData.serviceDuration} minutes</p>
             <p><strong>Status:</strong> <span style="color: #28a745; font-weight: bold;">Confirmed</span></p>
           </div>
@@ -96,7 +96,7 @@ const emailTemplates = {
           <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
             <h3 style="color: #495057; margin-top: 0;">📋 Original Booking Details</h3>
             <p><strong>Service:</strong> ${bookingData.serviceName}</p>
-            <p><strong>Date & Time:</strong> ${new Date(bookingData.datetime).toLocaleString()}</p>
+            <p><strong>Date & Time:</strong> ${new Date(bookingData.datetime).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
             <p><strong>Duration:</strong> ${bookingData.serviceDuration} minutes</p>
             <p><strong>Status:</strong> <span style="color: #dc3545; font-weight: bold;">Rejected</span></p>
           </div>
