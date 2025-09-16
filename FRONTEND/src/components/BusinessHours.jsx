@@ -7,7 +7,7 @@ const businessHours = {
   sunday: '7am - 9pm',
   tuesday:'7am - 1pm'
 };
-
+//this was changed
 export default function BusinessHours() {
   return (
     <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
