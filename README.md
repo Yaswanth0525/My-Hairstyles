@@ -117,4 +117,16 @@ My-Hairstyles/
 ## 📧 Contact
 
 For any inquiries or feedback, please open an issue or contact the project maintainer.
+## 📸 Gallery
+
+Here are some screenshots of the My-Hairstyles project:
+
+![Screenshot 436](images/Screenshot%20(436).png)
+![Screenshot 437](images/Screenshot%20(437).png)
+![Screenshot 438](images/Screenshot%20(438).png)
+![Screenshot 439](images/Screenshot%20(439).png)
+![Screenshot 440](images/Screenshot%20(440).png)
+![Screenshot 441](images/Screenshot%20(441).png)
+![Screenshot 442](images/Screenshot%20(442).png)
+
 
