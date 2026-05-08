@@ -6,12 +6,11 @@ import Gallery from './pages/Gallery'
 import Contact from './pages/Contact'
 import Bookings from './pages/Bookings'
 import AdminLogin from './pages/AdminLogin'
-import AdminRegister from './pages/AdminRegister'
 import AdminDashboard from './pages/AdminDashboard'
 import AdminBookings from './pages/AdminBookings'
 import AdminFeedback from './pages/AdminFeedback'
 import Footer from './components/Footer'
-import { Toaster ,toast} from "sonner";
+import { Toaster } from "sonner";
 
 
 function App() {
